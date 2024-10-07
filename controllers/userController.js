@@ -1,0 +1,77 @@
+const bcrypt = require("bcrypt");
+const prisma = require("../lib/prisma");
+
+const createUser = async (req, res) => {
+    const { name, email, password } = req.body;
+    const userExists = await prisma.user.findUnique({
+        where: {
+            email
+        }
+    })
+    if (userExists) {
+        return res.status(400).json({ message: "User already exists" });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await prisma.user.create({
+        data: {
+            name,
+            email,
+            password: hashedPassword
+        }
+    })
+    res.status(201).json({ message: "User created successfully", user: newUser });
+}
+
+const getUsers = async (req, res) => {
+    const users = await prisma.user.findMany();
+    res.status(200).json({ users });
+}
+
+const getUserById = async (req, res) => {
+    const { id } = req.params;
+    const user = await prisma.user.findUnique({
+        where: {
+            id
+        }
+    })
+    res.status(200).json({ user });
+}
+
+const logUserIn = async (req, res) => {
+    const { email, password } = req.body;
+    const user = await prisma.user.findUnique({
+        where: {
+            email
+        }
+    })
+    if (!user) {
+        return res.status(400).json({ message: "User does not exist" });
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+        return res.status(400).json({ message: "Invalid password" });
+    }
+    res.status(200).json({ message: "User logged in successfully", user });
+}
+
+const updateBestScore = async (req, res) => {
+    const { id } = req.params;
+    const { bestScore } = req.body;
+    const updatedUser = await prisma.user.update({
+        where: {
+            id
+        },
+        data: {
+            bestScore
+        }
+    })
+    res.status(200).json({ message: "User updated successfully", user: updatedUser });
+}
+
+module.exports = {
+    createUser,
+    getUsers,
+    logUserIn,
+    getUserById,
+    updateBestScore,
+}
