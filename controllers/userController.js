@@ -88,7 +88,7 @@ const updateBestScoreAndGamePlayed = async (req, res) => {
             },
             data: {
                 bestScore: bestScoreInt,
-                gamePlayed: currentUser.gamePlayed + gamePlayedInt // Add the new gamePlayed value to the existing one
+                gamePlayed: currentUser.gamePlayed + gamePlayedInt 
             }
         })
         res.status(200).json({ message: "User updated successfully", user: updatedUser });
