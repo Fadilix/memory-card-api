@@ -75,7 +75,7 @@ const logUserIn = async (req, res) => {
 const updateBestScore = async (req, res) => {
     try {
         const { id } = req.params;
-        const { bestScore } = req.body;
+        let { bestScore } = req.body;
         bestScore = parseInt(bestScore);
         const updatedUser = await prisma.user.update({
             where: { id },
@@ -90,7 +90,7 @@ const updateBestScore = async (req, res) => {
 const updateGamePlayed = async (req, res) => {
     try {
         const { id } = req.params;
-        const { gamePlayed } = req.body;
+        let { gamePlayed } = req.body;
         gamePlayed = parseInt(gamePlayed);
         const currentUser = await prisma.user.findUnique({
             where: { id },
