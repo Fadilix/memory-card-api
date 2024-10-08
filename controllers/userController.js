@@ -74,16 +74,12 @@ const updateBestScore = async (req, res) => {
     try {
         const { id } = req.params;
         const { bestScore } = req.body;
-
-        if (bestScore !== undefined) {
-            const updatedUser = await prisma.user.update({
-                where: { id },
-                data: { bestScore: parseInt(bestScore) }
-            });
-            return res.status(200).json({ message: "Best score updated successfully", user: updatedUser });
-        } else {
-            return res.status(400).json({ message: "Best score is required" });
-        }
+        bestScore = parseInt(bestScore);
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data: { bestScore: parseInt(bestScore) }
+        });
+        return res.status(200).json({ message: "Best score updated successfully", user: updatedUser });
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error: error.message });
     }
@@ -93,20 +89,16 @@ const updateGamePlayed = async (req, res) => {
     try {
         const { id } = req.params;
         const { gamePlayed } = req.body;
-
-        if (gamePlayed !== undefined) {
-            const currentUser = await prisma.user.findUnique({
-                where: { id },
-                select: { gamePlayed: true }
-            });
-            const updatedUser = await prisma.user.update({
-                where: { id },
-                data: { gamePlayed: currentUser.gamePlayed + parseInt(gamePlayed) }
-            });
-            return res.status(200).json({ message: "Game played updated successfully", user: updatedUser });
-        } else {
-            return res.status(400).json({ message: "Game played is required" });
-        }
+        gamePlayed = parseInt(gamePlayed);
+        const currentUser = await prisma.user.findUnique({
+            where: { id },
+            select: { gamePlayed: true }
+        });
+        const updatedUser = await prisma.user.update({
+            where: { id },
+            data: { gamePlayed: currentUser.gamePlayed + parseInt(gamePlayed) }
+        });
+        return res.status(200).json({ message: "Game played updated successfully", user: updatedUser });
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error: error.message });
     }
