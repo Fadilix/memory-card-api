@@ -24,7 +24,15 @@ const createUser = async (req, res) => {
 }
 
 const getUsers = async (req, res) => {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            country: true,
+            bestScore: true
+        }
+    });
     res.status(200).json({ users });
 }
 
@@ -33,6 +41,13 @@ const getUserById = async (req, res) => {
     const user = await prisma.user.findUnique({
         where: {
             id
+        },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            country: true,
+            bestScore: true
         }
     })
     res.status(200).json({ user });
