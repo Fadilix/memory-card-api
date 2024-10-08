@@ -71,17 +71,22 @@ const logUserIn = async (req, res) => {
 }
 
 const updateBestScore = async (req, res) => {
-    const { id } = req.params;
-    const { bestScore } = req.body;
-    const updatedUser = await prisma.user.update({
-        where: {
-            id
-        },
-        data: {
-            bestScore
-        }
-    })
-    res.status(200).json({ message: "User updated successfully", user: updatedUser });
+    try {
+        const { id } = req.params;
+        const { bestScore } = req.body;
+        const bestScoreInt = parseInt(bestScore);
+        const updatedUser = await prisma.user.update({
+            where: {
+                id
+            },
+            data: {
+                bestScore: bestScoreInt
+            }
+        })
+        res.status(200).json({ message: "User updated successfully", user: updatedUser });
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", error: error.message });
+    }
 }
 
 module.exports = {
