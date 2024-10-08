@@ -18,7 +18,7 @@ app.get("/api/v1/users", userController.getUsers);
 app.post("/api/v1/users", userController.createUser);
 app.get("/api/v1/users/:id", userController.getUserById);
 app.post("/api/v1/users/login", userController.logUserIn);
-app.put("/api/v1/users/:id", userController.updateBestScore);
+app.put("/api/v1/users/:id", userController.updateBestScoreAndGamePlayed);
 
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);

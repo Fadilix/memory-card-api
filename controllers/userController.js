@@ -70,17 +70,25 @@ const logUserIn = async (req, res) => {
     res.status(200).json({ message: "User logged in successfully", user: { id: user.id, name: user.name, email: user.email } });
 }
 
-const updateBestScore = async (req, res) => {
+const updateBestScoreAndGamePlayed = async (req, res) => {
     try {
         const { id } = req.params;
-        const { bestScore } = req.body;
+        const { bestScore, gamePlayed } = req.body;
         const bestScoreInt = parseInt(bestScore);
+        const gamePlayedInt = parseInt(gamePlayed);
+        
+        const currentUser = await prisma.user.findUnique({
+            where: { id },
+            select: { gamePlayed: true }
+        });
+
         const updatedUser = await prisma.user.update({
             where: {
                 id
             },
             data: {
-                bestScore: bestScoreInt
+                bestScore: bestScoreInt,
+                gamePlayed: currentUser.gamePlayed + gamePlayedInt // Add the new gamePlayed value to the existing one
             }
         })
         res.status(200).json({ message: "User updated successfully", user: updatedUser });
@@ -94,5 +102,5 @@ module.exports = {
     getUsers,
     logUserIn,
     getUserById,
-    updateBestScore,
+    updateBestScoreAndGamePlayed,
 }
