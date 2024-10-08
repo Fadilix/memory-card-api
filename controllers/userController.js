@@ -47,7 +47,8 @@ const getUserById = async (req, res) => {
             name: true,
             email: true,
             country: true,
-            bestScore: true
+            bestScore: true,
+            gamePlayed: true,
         }
     })
     res.status(200).json({ user });
