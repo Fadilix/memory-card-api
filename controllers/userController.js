@@ -2,21 +2,22 @@ const bcrypt = require("bcrypt");
 const prisma = require("../lib/prisma");
 
 const createUser = async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, country } = req.body;
     const userExists = await prisma.user.findUnique({
         where: {
             email
         }
     })
     if (userExists) {
-        return res.status(400).json({ message: "User already exists" });
+        return res.status(400).json({ message: "User with this email already exists" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await prisma.user.create({
         data: {
             name,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            country
         }
     })
     res.status(201).json({ message: "User created successfully", user: newUser });
@@ -51,7 +52,7 @@ const logUserIn = async (req, res) => {
     if (!isPasswordValid) {
         return res.status(400).json({ message: "Invalid password" });
     }
-    res.status(200).json({ message: "User logged in successfully", user });
+    res.status(200).json({ message: "User logged in successfully", user: { id: user.id, name: user.name, email: user.email } });
 }
 
 const updateBestScore = async (req, res) => {
